@@ -9,7 +9,7 @@ class Product  extends Controller
   }
   public function index()
   {
-
+    echo "success";
     // render view
   }
 
@@ -18,11 +18,12 @@ class Product  extends Controller
     $dataProduct = $this->model->getList();
     $this->data['product_list'] = $dataProduct;
 
-    
-    $this->data['content']="products/list";
-    $this->render("layouts/client_layout",$this->data);
+
+    $this->data['content'] = "products/list";
+    $this->render("layouts/client_layout", $this->data);
   }
-  public function getDetails(){
+  public function getDetails()
+  {
     $this->render("products/detail");
   }
 }

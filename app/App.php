@@ -16,7 +16,9 @@ class App
   }
   public function getUrl()
   {
+
     if (!empty($_SERVER['REQUEST_URI'])) {
+
       return $_SERVER['REQUEST_URI'];
     }
     return "/";
@@ -25,13 +27,16 @@ class App
   public function handleUrl()
   {
 
+
     $url = $this->getUrl();
-    $url = $this->__routes->handleRoute($url);
-
-
+    $data = $this->__routes->handleRoute($url);
+    extract($data);
+    $url = $path;
+    // echo $url;
     $urlArr = array_filter(explode("/", $url));
-
-    unset($urlArr[0]);
+    if ($active != 1) {
+      unset($urlArr[0]);
+    }
     $urlArr = array_values($urlArr);
     // echo "<pre>";
     // print_r($urlArr);
@@ -75,8 +80,12 @@ class App
     } else {
       $this->__controller = ucfirst($this->__controller);
     }
+
+    if (empty($urlCheck)) {
+      $urlCheck = $this->__controller;
+    }
     if (file_exists("app/controllers/" . ($urlCheck) . ".php")) {
-      require_once("controllers/" .($urlCheck) . ".php");
+      require_once("controllers/" . ($urlCheck) . ".php");
       //kiem tra class ton tai
       if (class_exists($this->__controller)) {
         $this->__controller = new $this->__controller();
