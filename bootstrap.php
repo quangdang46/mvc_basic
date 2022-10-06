@@ -20,7 +20,8 @@ define('_WEB_ROOT', $web_root);
 
 
 require_once "./configs/routers.php";
-require_once "core/Controller.php";
+require_once "./core/Route.php";
 require_once "./app/App.php";
+require_once "core/Controller.php";
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 class App
 {
-  private $__controller, $__action, $__params;
+  private $__controller, $__action, $__params, $__routes;
 
   function __construct()
   {
@@ -11,6 +11,7 @@ class App
     }
     $this->__action = "index";
     $this->__params = [];
+    $this->__routes = new Route();
     $this->handleUrl();
   }
   public function getUrl()
@@ -23,12 +24,46 @@ class App
 
   public function handleUrl()
   {
+
     $url = $this->getUrl();
+    $url = $this->__routes->handleRoute($url);
+
+
     $urlArr = array_filter(explode("/", $url));
-    unset($urlArr[1]);
+
+    unset($urlArr[0]);
     $urlArr = array_values($urlArr);
+    // echo "<pre>";
+    // print_r($urlArr);
+    // echo "</pre>";
 
 
+    //check url co la thu muc hay class
+
+    $urlCheck = "";
+
+    foreach ($urlArr as $key => $item) {
+      $urlCheck .= $item . "/";
+      $fileCheck = strtolower(rtrim($urlCheck, '/'));
+      // //tach thanh mang
+
+      $fileArr = explode("/", $fileCheck);
+      //in hoa phan tu cuoi
+      $fileArr[count($fileArr) - 1] = ucfirst($fileArr[count($fileArr) - 1]);
+      //noi lai
+      $fileCheck = implode("/", $fileArr);
+      // echo $fileCheck."</br>";
+      //kiem tra
+      if (!empty($urlArr[$key - 1])) {
+        unset($urlArr[$key - 1]);
+      }
+      if (file_exists("app/controllers/" . ($fileCheck) . ".php")) {
+        $urlCheck = $fileCheck;
+        break;
+      }
+    }
+    // echo $urlCheck;
+    $urlArr = array_values($urlArr);
     // echo "<pre>";
     // print_r($urlArr);
     // echo "</pre>";
@@ -40,8 +75,8 @@ class App
     } else {
       $this->__controller = ucfirst($this->__controller);
     }
-    if (file_exists("app/controllers/" . ($this->__controller) . ".php")) {
-      require_once("controllers/" . $this->__controller . ".php");
+    if (file_exists("app/controllers/" . ($urlCheck) . ".php")) {
+      require_once("controllers/" .($urlCheck) . ".php");
       //kiem tra class ton tai
       if (class_exists($this->__controller)) {
         $this->__controller = new $this->__controller();
